@@ -1,5 +1,5 @@
 #include "StormSerial.h"
-StormSerial ss = StormSerial(false,62,13);
+StormSerial ss = StormSerial(false,60,62); // message between < and >
 
 void setup() {
   // put your setup code here, to run once:

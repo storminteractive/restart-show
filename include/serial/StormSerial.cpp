@@ -1,6 +1,9 @@
 #include "Arduino.h"
 #include "StormSerial.h"
 
+// BOM - ascii code for beginning of message in non-blocking mode
+// EOM - ascii code for end of message
+
 StormSerial::StormSerial(bool serialEcho,int BOM, int EOM){
     this->_echo = serialEcho;
     this->messageStarted = false;

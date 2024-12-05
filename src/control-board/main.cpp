@@ -1,18 +1,34 @@
 #include <Arduino.h>
+#include "util.h"
 
-// put function declarations here:
-int myFunction(int, int);
+#define RELAY_PIN 2
+#define LED_PIN LED_BUILTIN // 13
+
+void enableRelay();
+void disableRelay();
+
+void enableRelay() {
+  digitalWrite(RELAY_PIN, LOW);
+  digitalWrite(LED_PIN, LOW);
+}
+
+void disableRelay() {
+  digitalWrite(RELAY_PIN, HIGH);
+  digitalWrite(LED_PIN, HIGH);
+}
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  pinMode(RELAY_PIN, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  if(Serial.available() > 0){
+    char receivedByte = Serial.read();
+    if(receivedByte == '1') {
+      enableRelay();
+    } else if(receivedByte == '0') {
+      disableRelay();
+    }
+  }
 }

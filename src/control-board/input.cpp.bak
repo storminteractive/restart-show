@@ -1,0 +1,37 @@
+#include <Arduino.h>
+#include "serial/StormSerial.h"
+#include "util.h"
+
+const int buttonPin = 7;       // GPIO7 - where the start button is connected (and to ground)
+const int doorRelayPin = 8;    // GPIO8 - where the relay is connected
+
+unsigned long lastDebounceTime = 0;
+const unsigned long debounceDelay = 50;
+
+StormSerial ss = StormSerial(false,60,62); // message between < and >
+String message = "";
+
+void doorButton(){
+  // Turn on the relay for 1 second
+  digitalWrite(doorRelayPin, HIGH);
+  delay(1000);
+  digitalWrite(doorRelayPin, LOW);
+}
+
+void notifyApp(){
+  //Serial.println("{}");
+}
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+
+  // if button is pressed notify the app to start show
+  
+  // get message from the app
+  // if message is that video finished open to the door
+
+}
