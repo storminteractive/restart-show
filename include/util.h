@@ -3,8 +3,7 @@
 #include "Arduino.h"
 //#define UTIL_DEBUG
 
-void blinkme(int howmany);
-void blinkmeSlow(int howmany);
+void blinkLed(short int ledPin, short int howmany, short int delayMs);
 bool buttonPressed(int pin);
 
 #endif
