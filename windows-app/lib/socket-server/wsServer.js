@@ -2,7 +2,7 @@
 // const { wsServerHandleConnection } = require('./wsServer');
 // wss.on('connection', handleConnection);
 
-const { lwt } = require('./logger');
+const { lwt } = require('../common/logger');
 const { swapVideo } = require('./actions');
 
 let websiteSock = null; 
@@ -34,7 +34,7 @@ const wsServerHandleConnection = (ws, req) => {
 
         try {
             commandJson = JSON.parse(message);
-            lwt('Received command:', commandJson);                
+            lwt('Received command:', commandJson);
         } catch (error) {
             lwt('Error parsing JSON:', error);
             return;
@@ -42,6 +42,11 @@ const wsServerHandleConnection = (ws, req) => {
 
         if (commandJson.action === 'show') {
             lwt('Received "show" command, sending "swap-video" message to client');
+            swapVideo(websiteSock);
+        }
+
+        if (commandJson.action === 'show') {
+            lwt('Video has finished, we can open the door');
             swapVideo(websiteSock);
         }
 

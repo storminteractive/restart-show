@@ -7,11 +7,11 @@
 // const wsClient = new WebSocketClient(url);
 // wsClient.sendCommand({ 'action': 'show' });
 
-const { lwt } = require('./logger');
+const { lwt } = require('../common/logger');
 const WebSocket = require('ws');
 
 class WebSocketClient {
-    constructor(url) {
+    constructor(url, endShowEvent) {
         this.url = url;
         this.connectionInterval = 2000; // 2 seconds
         this.retryTimeout = null;

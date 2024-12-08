@@ -1,24 +1,30 @@
 const readline = require('readline');
 const WebSocket = require('ws');
-const { lwt } = require('./logger');
-const { WebSocketClient } = require('./wsClient');
+const { lwt } = require('./lib/common/logger');
+const { WebSocketClient } = require('./lib/control-board/wsClient');
 const { SerialPort } = require('serialport');
+
+const { RELAY_COM_PORT_NAME, BUTTON_COM_PORT_NAME } = require('./lib/config');
 
 // Connect to the WebSocket server
 
-// const url = 'ws://localhost:3000/?command-app';
-// const wsClient = new WebSocketClient(url);
-const buttonComPortName = 'COM3';
-const relayComPortName = 'COM4';
+const endShowEvent = () => {
+    lwt('Show has finished')
+}
+
+const url = 'ws://localhost:3000/?command-app';
+const wsClient = new WebSocketClient(url,endShowEvent);
+
+const doorCloseDelaySeconds = 3;
 
 // Setup serial ports
 const relayComPort = new SerialPort({
-    path: relayComPortName, // Updated to use 'path' instead of directly passing the port name
+    path: RELAY_COM_PORT_NAME, // Updated to use 'path' instead of directly passing the port name
     baudRate: 9600
 });
 
 const buttonComPort = new SerialPort({
-    path: buttonComPortName, // Updated to use 'path' instead of directly passing the port name
+    path: BUTTON_COM_PORT_NAME, // Updated to use 'path' instead of directly passing the port name
     baudRate: 9600
 });
 
@@ -40,14 +46,23 @@ function sendToSerial(data) {
     });
 }
 
-const enableRelay = () => { console.log('Enabling relay...'); sendToSerial('1'); }
-const disableRelay = () => { console.log('Disabling relay...'); sendToSerial('0'); }
+const openDoor = () => { lwt('Opening door - enabling relay...'); sendToSerial('1'); }
+const closeDoor = () => { lwt('Closing door - disabling relay...'); sendToSerial('0'); }
 
 // Listen for data on buttonComPort
 buttonComPort.on('data', (data) => {
     if (data.toString().trim() === '1') {
-        console.log('Button is pressed');
-        lwt(wsClient.sendCommand({ 'action': 'show' })?'Command sent successfully':'Command send failed...');
+        lwt('Button is pressed');
+        lwt(wsClient.sendCommand({ 'action': 'show' })?'Show command sent successfully':'Show Command send failed...');
+
+        // setTimeout(() => {
+        //     openDoor();
+        // }, doorCloseDelaySeconds * 1000);
+        // setTimeout(() => {
+        //     openDoor();
+        // }, doorCloseDelaySeconds * 1000);
+
+        // lwt(wsClient.sendCommand({ 'action': 'show' })?'Command sent successfully':'Command send failed...');
     }
 });
 
@@ -57,8 +72,18 @@ const rl = readline.createInterface({
     terminal: true
 });
 
-let instructions = `Press "1" followed by ENTER to send the "show" command and "2" followed by ENTER to send the "skip" command, 3 followed by ENTER to send relay on, 4 followed by ENTER to send relay off, 5 to exit`;
+openDoor();
+setTimeout(() => {
+    closeDoor();
+}, doorCloseDelaySeconds * 1000);
 
+let instructions = `
+Press "1" followed by ENTER to send the "show" command,
+Press "2" followed by ENTER to send the "skip" command,
+Press "3" followed by ENTER to open the door,
+Press "4" followed by ENTER to close the door,
+Press "5" to exit
+`;
 console.log(instructions);
 
 // Listen for keypresses to send commands
@@ -71,10 +96,10 @@ rl.on('line', (input) => {
             lwt(wsClient.sendCommand({ 'action': 'skip' })?'Command sent successfully':'Skip Command send failed...');
             break;
         case '3':
-            enableRelay();
+            openDoor();
             break;
         case '4':
-            disableRelay();
+            closeDoor();
             break;
         case '5':
             process.exit();

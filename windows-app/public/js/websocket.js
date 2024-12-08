@@ -35,6 +35,9 @@ function connect() {
                 videoElement.src = 'videos/video1.mp4';
                 videoElement.loop = true;
                 videoElement.play();
+                // send { 'action': 'show-finished' }
+                lwt('Sending show-finished command to WebSocket server');
+                socket.send(JSON.stringify({ 'action': 'show-finished' }));
             }, { once: true });
 
             videoElement.play();

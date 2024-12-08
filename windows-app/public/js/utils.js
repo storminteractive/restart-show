@@ -74,5 +74,5 @@ function showVersionOnLoad(version) {
     // Remove the version display after 2 seconds
     setTimeout(() => {
         versionElement.remove();
-    }, 10000);
+    }, 5000);
 }

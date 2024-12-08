@@ -1,4 +1,4 @@
-const { lwt } = require('./logger');
+const { lwt } = require('../common/logger');
 
 const swapVideo = (sock) => {
     if (sock !== null) {
