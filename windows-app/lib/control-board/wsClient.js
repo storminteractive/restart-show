@@ -11,11 +11,12 @@ const { lwt } = require('../common/logger');
 const WebSocket = require('ws');
 
 class WebSocketClient {
-    constructor(url, endShowEvent) {
+    constructor(url, controlBoardActions) {
         this.url = url;
         this.connectionInterval = 2000; // 2 seconds
         this.retryTimeout = null;
         this.ws = null;
+        this.controlBoardActions = controlBoardActions;
         this.connect();
     }
 
@@ -24,13 +25,25 @@ class WebSocketClient {
         this.ws = new WebSocket(this.url);
 
         this.ws.on('open', () => {
-            lwt('Connected to the primary app');
-            lwt('Press "1" to send the "show" command and "2" to send the "skip" command.');
+            lwt('Connected.');
             clearTimeout(this.retryTimeout); // Clear the retry timeout if the connection is successful
         });
 
         this.ws.on('message', (data) => {
-            lwt('Received message: %s', data);
+            let commandJson;
+
+            try {
+                commandJson = JSON.parse(data);
+                lwt('Received command:', commandJson);
+            } catch (error) {
+                lwt('Error parsing JSON:', error);
+                return;
+            }
+
+            if (commandJson.action === 'open-door') {
+                lwt('Received "open-door" command, opening the door...');
+                this.controlBoardActions.openDelayCloseDoor();
+            }
         });
 
         this.ws.on('close', () => {

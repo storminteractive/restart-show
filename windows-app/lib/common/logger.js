@@ -14,6 +14,7 @@ function formatDate(date) {
 function _getCallerFile() {
     var originalFunc = Error.prepareStackTrace;
     var callerfile;
+    var linenumber;
 
     try {
         var err = new Error();
@@ -23,7 +24,9 @@ function _getCallerFile() {
         currentfile = err.stack.shift().getFileName();
 
         while (err.stack.length) {
-            callerfile = err.stack.shift().getFileName();
+            var callsite = err.stack.shift();
+            callerfile = callsite.getFileName();
+            linenumber = callsite.getLineNumber();
             if(currentfile !== callerfile) break;
         }
     } catch (e) {}
@@ -34,7 +37,7 @@ function _getCallerFile() {
     if (callerfile.includes('/')) callerfile = callerfile.split('/').pop();
     else if (callerfile.includes('\\')) callerfile = callerfile.split('\\').pop();
 
-    return callerfile;
+    return `${callerfile}:${linenumber}`;
 }
 
 // log with timestamp

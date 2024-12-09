@@ -9,4 +9,13 @@ const swapVideo = (sock) => {
     }
 }
 
-module.exports = { swapVideo };
+const openDoor = (sock) => {
+    if (sock !== null) {
+        lwt('Sending action:"open-door" to website sock');
+        sock.send(JSON.stringify({'action':'open-door'}));
+    } else {
+        lwt('Website socket is not connected');
+    }
+}
+
+module.exports = { swapVideo, openDoor };

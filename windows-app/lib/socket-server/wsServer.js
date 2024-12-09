@@ -3,7 +3,7 @@
 // wss.on('connection', handleConnection);
 
 const { lwt } = require('../common/logger');
-const { swapVideo } = require('./actions');
+const { swapVideo, openDoor } = require('./actions');
 
 let websiteSock = null; 
 let commandSock = null;
@@ -45,9 +45,9 @@ const wsServerHandleConnection = (ws, req) => {
             swapVideo(websiteSock);
         }
 
-        if (commandJson.action === 'show') {
-            lwt('Video has finished, we can open the door');
-            swapVideo(websiteSock);
+        if (commandJson.action === 'show-finished') {
+            lwt('Video has finished, we open the door');
+            openDoor(commandSock);
         }
 
         if (commandJson.action === 'skip') {
