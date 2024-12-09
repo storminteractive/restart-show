@@ -9,7 +9,9 @@ const {
 } = require("../config");
 
 class ControlBoardActions extends EventEmitter {
+
   constructor(buttonPortAction) {
+    super();
     this.setupSerialPorts();
     this.setupShowButtonAction();
     this.buttonPortAction = buttonPortAction;
@@ -32,31 +34,31 @@ class ControlBoardActions extends EventEmitter {
 
   setupSerialPorts() {
     // Const list serial ports available
-    lwt("Available serial ports:");
+    lwt("Checking for available serial ports");
     SerialPort.list().then((ports) => {
       ports.forEach((port) => {
-        lwt(port.path);
+        lwt(`Available serial port: `+port.path);
       });
     });
 
     // Setup serial ports
     lwt("Setting up relayComPort");
-    const relayComPort = new SerialPort({
+    this.relayComPort = new SerialPort({
       path: RELAY_COM_PORT_NAME, // Updated to use 'path' instead of directly passing the port name
       baudRate: BAUD_RATE,
     });
 
-    relayComPort.on("error", (err) => {
+    this.relayComPort.on("error", (err) => {
       lwt("Relay Serial port error: ", err.message);
     });
 
     lwt("Setting up buttonComPort");
-    const buttonComPort = new SerialPort({
+    this.buttonComPort = new SerialPort({
       path: BUTTON_COM_PORT_NAME, // Updated to use 'path' instead of directly passing the port name
       baudRate: BAUD_RATE,
     });
 
-    buttonComPort.on("error", (err) => {
+    this.buttonComPort.on("error", (err) => {
       lwt("Button Serial port error: ", err.message);
     });
   }
@@ -87,11 +89,10 @@ class ControlBoardActions extends EventEmitter {
   }
 
   openDelayCloseDoor() {
-    lwt(
-      `Performing an open door sequence with ${DOOR_CLOSE_DELAY} seconds delay`
-    );
+    lwt(`Performing an open door sequence with ${DOOR_CLOSE_DELAY} seconds delay`);
     this.openDoor();
     setTimeout(() => {
+      lwt(`Closing door after ${DOOR_CLOSE_DELAY} seconds`);
       this.closeDoor();
     }, DOOR_CLOSE_DELAY * 1000);
   }
