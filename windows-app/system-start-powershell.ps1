@@ -38,12 +38,15 @@ Write-Output "Starting socket-server.js..."
 Start-Process -NoNewWindow -FilePath "node" -ArgumentList "socket-server.js"
 Write-Output "Starting video-site.js..."
 Start-Process -NoNewWindow -FilePath "node" -ArgumentList "video-site.js"
+
+# sleep 2 seconds
+Start-Sleep -Seconds 2
+
+Write-Output "Starting Chrome in fullscreen mode on localhost:5000..."
+Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "--autoplay-policy=no-user-gesture-required --start-fullscreen http://localhost:5000"
+
 Write-Output "Starting control-board.js in foreground..."
 node control-board.js
-
-# Start Chrome in fullscreen mode on localhost:5000
-Write-Output "Starting Chrome in fullscreen mode on localhost:5000..."
-Start-Process -FilePath "chrome" -ArgumentList "--autoplay-policy=no-user-gesture-required --start-fullscreen http://localhost:5000"
 
 Write-Output "All services started. Press Ctrl+C to stop all services."
 
