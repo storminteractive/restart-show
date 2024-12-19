@@ -21,6 +21,9 @@ function KillProcessByCommandLine {
     }
 }
 
+# Pull any git changes
+Write-Output "Pulling latest changes from git..."
+git pull
 
 # Start processes
 Write-Output "Starting socket-server.js..."
