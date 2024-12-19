@@ -24,6 +24,8 @@ function KillProcessByCommandLine {
 # Pull any git changes
 Write-Output "Pulling latest changes from git..."
 git pull
+# Display title of latest commit
+Write-Output "Latest commit title: $(git log -1 --pretty=%B)"
 
 # Start processes
 Write-Output "Starting socket-server.js..."
