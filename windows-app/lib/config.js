@@ -6,5 +6,5 @@ module.exports = {
     BUTTON_COM_PORT_NAME: 'COM5',
     BAUD_RATE: 9600,
     
-    DOOR_CLOSE_DELAY: 5
+    DOOR_CLOSE_DELAY: 30
 };
