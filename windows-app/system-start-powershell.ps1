@@ -1,16 +1,5 @@
 
 # Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
-
-function CheckProcessRunning {
-    param ([string]$CmdString)
-
-    if (Get-WmiObject Win32_Process | Where-Object { $_.Name -eq "node.exe" } | Where-Object { $_.CommandLine -like "*$CmdString*" } | Select-Object Name, ProcessId, CommandLine) {
-        Write-Output "$CmdString is running."
-    } else {
-        Write-Output "$CmdString failed to start."
-    }
-}
-
 function KillProcessByCommandLine {
     param ([string]$CmdString)
 
@@ -52,8 +41,8 @@ Write-Output "All services started. Press Ctrl+C to stop all services."
 
 # Wait for user input to stop services
 do {
-    $input = Read-Host "Press 'k' to stop all services"
-} while ($input -ne 'k')
+    $i = Read-Host "Press 'k' to stop all services"
+} while ($i -ne 'k')
 
 Write-Output "Shutting down all services..."
 KillProcessByCommandLine "socket-server.js"
