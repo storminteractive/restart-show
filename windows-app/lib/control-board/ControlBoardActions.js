@@ -95,6 +95,11 @@ class ControlBoardActions extends EventEmitter {
       lwt(`Closing door after ${DOOR_CLOSE_DELAY} seconds`);
       this.closeDoor();
     }, DOOR_CLOSE_DELAY * 1000);
+    for(let i = 1; i <= DOOR_CLOSE_DELAY; i++) {
+      setTimeout(() => {
+        lwt(`Closing door in ${DOOR_CLOSE_DELAY - i}s...`);
+      }, i * 1000);
+    }
   }
 }
 
